@@ -9,6 +9,14 @@ class ArnauGrisoBot:
         super().__init__()
         logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                      level=logging.INFO)
+        try:
+            with open("songs.txt") as file:
+                self.sentences = file.readlines()
+                logging.debug("Sentences : "+str(self.sentences))
+        except FileNotFoundError as error:
+            logging.debug(error)
+            self.sentences = ["No tengo chorritemass"]
+    
         self.updater = Updater(token, use_context=True)
         self.dispatcher = self.updater.dispatcher
         self.dispatcher.add_handler( CommandHandler("start", self.start) )
@@ -94,14 +102,6 @@ class ArnauGrisoBot:
         context.bot.send_message(chat_id=update.effective_chat.id, text="Tiene los mismos permisos de copyright que las canciones de otros artistas que @arnaugriso canta en sus conciertos")
 
     def abracadabra(self, update: Update, context: CallbackContext):
-        
-        try:
-            with open("songs.txt") as file:
-                sentences = file.readlines()
-                logging.debug("Sentences : "+str(sentences))
-                context.bot.send_message(chat_id=update.effective_chat.id, text=random.choice(sentences))
-        except FileNotFoundError as error:
-            logging.debug(error)
-            context.bot.send_message(chat_id=update.effective_chat.id, text="No tengo más chorritemas")
+        context.bot.send_message(chat_id=update.effective_chat.id, text=random.choice(self.sentences))
 
 
