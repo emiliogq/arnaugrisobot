@@ -1,9 +1,18 @@
-from distutils.cmd import Command
-from telegram import Update, Chat, ChatMember, ParseMode, ChatMemberUpdated
-from telegram.ext import Updater, CommandHandler, ChatMemberHandler, CallbackContext
+
 import random
 import logging
 
+from distutils.cmd import Command
+from telegram import Update, Chat, ChatMember, ParseMode, ChatMemberUpdated
+from telegram.ext import Updater, CommandHandler, ChatMemberHandler, CallbackContext
+
+from helpers import telegram
+
+"""Arnau Griso Telegram Bot
+
+It models a telegram bot and perform some reactions to Telegram commands
+
+"""
 class ArnauGrisoBot:
     def __init__(self, token = "TOKEN") -> None:
         super().__init__()
@@ -29,43 +38,9 @@ class ArnauGrisoBot:
     def __del__(self):
         self.updater.stop()
 
-    def __extract_status_change(self, chat_member_update: ChatMemberUpdated):
-        """Takes a ChatMemberUpdated instance and extracts whether the 'old_chat_member' was a member
-        of the chat and whether the 'new_chat_member' is a member of the chat. Returns None, if
-        the status didn't change.
-        """
-        status_change = chat_member_update.difference().get("status")
-        old_is_member, new_is_member = chat_member_update.difference().get("is_member", (None, None))
-
-        if status_change is None:
-            return None
-
-        old_status, new_status = status_change
-        was_member = (
-            old_status
-            in [
-                ChatMember.MEMBER,
-                ChatMember.CREATOR,
-                ChatMember.ADMINISTRATOR,
-            ]
-            or (old_status == ChatMember.RESTRICTED and old_is_member is True)
-        )
-        is_member = (
-            new_status
-            in [
-                ChatMember.MEMBER,
-                ChatMember.CREATOR,
-                ChatMember.ADMINISTRATOR,
-            ]
-            or (new_status == ChatMember.RESTRICTED and new_is_member is True)
-        )
-
-        return was_member, is_member
-
-
     def chat_member_handler(self, update: Update, context: CallbackContext):
         logging.info("Chat member event occurred")
-        result = self.__extract_status_change(update.chat_member)
+        result = extract_status_change(update.chat_member)
         logging.info(result)
         if result is None:
             return
