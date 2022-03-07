@@ -6,7 +6,7 @@ from distutils.cmd import Command
 from telegram import Update, Chat, ChatMember, ParseMode, ChatMemberUpdated
 from telegram.ext import Updater, CommandHandler, ChatMemberHandler, CallbackContext
 
-from helpers import telegram
+from helpers.telegram import *
 
 """Arnau Griso Telegram Bot
 
